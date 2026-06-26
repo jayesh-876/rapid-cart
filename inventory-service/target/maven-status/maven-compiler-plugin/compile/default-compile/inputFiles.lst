@@ -1,9 +1,0 @@
-/Users/jayesh876/workspace/rapid-cart/inventory-service/src/main/java/com/rapidcart/inventory/InventoryServiceApplication.java
-/Users/jayesh876/workspace/rapid-cart/inventory-service/src/main/java/com/rapidcart/inventory/config/KafkaConsumerConfig.java
-/Users/jayesh876/workspace/rapid-cart/inventory-service/src/main/java/com/rapidcart/inventory/controller/InventoryController.java
-/Users/jayesh876/workspace/rapid-cart/inventory-service/src/main/java/com/rapidcart/inventory/dto/AddStockRequest.java
-/Users/jayesh876/workspace/rapid-cart/inventory-service/src/main/java/com/rapidcart/inventory/entity/ItemEntity.java
-/Users/jayesh876/workspace/rapid-cart/inventory-service/src/main/java/com/rapidcart/inventory/kafka/InventoryEventConsumer.java
-/Users/jayesh876/workspace/rapid-cart/inventory-service/src/main/java/com/rapidcart/inventory/kafka/InventoryEventProducer.java
-/Users/jayesh876/workspace/rapid-cart/inventory-service/src/main/java/com/rapidcart/inventory/repository/ItemRepository.java
-/Users/jayesh876/workspace/rapid-cart/inventory-service/src/main/java/com/rapidcart/inventory/service/InventoryService.java

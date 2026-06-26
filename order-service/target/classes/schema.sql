@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS orders (
-    id VARCHAR(100) PRIMARY KEY,
-    user_id VARCHAR(100),
-    amount DOUBLE PRECISION,
-    status VARCHAR(50)
-);
