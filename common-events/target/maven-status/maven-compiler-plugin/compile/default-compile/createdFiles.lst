@@ -1,0 +1,11 @@
+com/rapidcart/order/events/InventoryReservedEvent.class
+com/rapidcart/order/events/KafkaJsonDeserializer.class
+com/rapidcart/order/events/InventoryFailedEvent.class
+com/rapidcart/order/events/KafkaJsonSerializer.class
+com/rapidcart/order/events/PaymentFailedEvent.class
+com/rapidcart/order/events/EventEnvelope.class
+com/rapidcart/order/events/OrderCompletedEvent.class
+com/rapidcart/order/events/ReleaseInventoryEvent.class
+com/rapidcart/order/events/PaymentCompletedEvent.class
+com/rapidcart/order/events/OrderCreatedEvent.class
+com/rapidcart/order/events/KafkaEventConfig.class
