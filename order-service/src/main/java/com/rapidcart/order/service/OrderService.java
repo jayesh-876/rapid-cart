@@ -1,5 +1,7 @@
 package com.rapidcart.order.service;
 
+import com.rapidcart.common.exception.ResourceNotFoundException;
+import com.rapidcart.common.exception.ValidationException;
 import com.rapidcart.order.dto.CreateOrderRequest;
 import com.rapidcart.order.dto.OrderResponse;
 import com.rapidcart.order.entity.OrderEntity;
@@ -26,6 +28,7 @@ public class OrderService {
     private final OrderEventProducer producer;
 
     public OrderResponse createOrder(CreateOrderRequest request) {
+        validateCreateOrderRequest(request);
         log.info("{} Creating order userId={} productId={} amount={}", SAGA, request.userId(), request.productId(), request.amount());
         String orderId = UUID.randomUUID().toString();
 
@@ -50,7 +53,7 @@ public class OrderService {
         OrderEntity order = orderRepository
                 .findById(orderId)
                 .orElseThrow(() ->
-                        new RuntimeException("Order not found: " + orderId));
+                        new ResourceNotFoundException("Order not found: " + orderId));
 
         return new OrderResponse(
                 order.getId(),
@@ -94,7 +97,8 @@ public class OrderService {
         updateStatus(orderId, OrderStatus.PAYMENT_FAILED);
 
         // SAGA compensating transaction: release the reserved inventory
-        OrderEntity order = orderRepository.findById(orderId).orElseThrow();
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + orderId));
         producer.publishReleaseInventory(
                 new ReleaseInventoryEvent(orderId, order.getProductId(), order.getQuantity())
         );
@@ -103,10 +107,29 @@ public class OrderService {
     }
 
     private void updateStatus(String orderId, OrderStatus status) {
-        OrderEntity order = orderRepository.findById(orderId).orElseThrow();
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + orderId));
         OrderStatus previousStatus = order.getStatus();
         order.setStatus(status);
         orderRepository.save(order);
         log.info("{} Status transition orderId={} {} -> {}", SAGA, orderId, previousStatus, status);
+    }
+
+    private void validateCreateOrderRequest(CreateOrderRequest request) {
+        if (request == null) {
+            throw new ValidationException("Request body is required");
+        }
+        if (request.productId() == null || request.productId().isBlank()) {
+            throw new ValidationException("productId is required");
+        }
+        if (request.userId() == null || request.userId().isBlank()) {
+            throw new ValidationException("userId is required");
+        }
+        if (request.quantity() <= 0) {
+            throw new ValidationException("quantity must be greater than 0");
+        }
+        if (request.amount() <= 0) {
+            throw new ValidationException("amount must be greater than 0");
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.rapidcart.inventory.service;
 
+import com.rapidcart.common.exception.ResourceNotFoundException;
+import com.rapidcart.common.exception.ValidationException;
 import com.rapidcart.inventory.entity.ItemEntity;
 import com.rapidcart.inventory.repository.ItemRepository;
 import com.rapidcart.inventory.kafka.InventoryEventProducer;
@@ -21,13 +23,14 @@ public class InventoryService {
     private final InventoryEventProducer producer;
 
     public void handleOrderCreated(OrderCreatedEvent event) {
+        validateOrderCreatedEvent(event);
         String productId = event.productId();
 
         log.info("Checking inventory: orderId={}, productId={}", event.orderId(), productId);
         ItemEntity item = repository.findByProductId(productId)
                 .orElseThrow(() -> {
                     log.error("Inventory not found: orderId={}, productId={}", event.orderId(), productId);
-                    return new RuntimeException("Inventory not found");
+                    return new ResourceNotFoundException("Inventory not found for productId=" + productId);
                 });
 
         if (item.getStock() >= event.quantity()) {
@@ -76,6 +79,7 @@ public class InventoryService {
     }
 
     public void addStock(String productId, int quantity) {
+        validateProductIdAndQuantity(productId, quantity);
         log.info("Adding stock: productId={}, quantity={}", productId, quantity);
         ItemEntity item = repository.findByProductId(productId)
                 .orElseGet(() -> {
@@ -90,5 +94,29 @@ public class InventoryService {
         item.setStock(item.getStock() + quantity);
         repository.save(item);
         log.info("Stock updated: productId={}, stock {} -> {}", productId, oldStock, item.getStock());
+    }
+
+    private void validateOrderCreatedEvent(OrderCreatedEvent event) {
+        if (event == null) {
+            throw new ValidationException("Event payload is required");
+        }
+        if (event.productId() == null || event.productId().isBlank()) {
+            throw new ValidationException("productId is required");
+        }
+        if (event.orderId() == null || event.orderId().isBlank()) {
+            throw new ValidationException("orderId is required");
+        }
+        if (event.quantity() <= 0) {
+            throw new ValidationException("quantity must be greater than 0");
+        }
+    }
+
+    private void validateProductIdAndQuantity(String productId, int quantity) {
+        if (productId == null || productId.isBlank()) {
+            throw new ValidationException("productId is required");
+        }
+        if (quantity <= 0) {
+            throw new ValidationException("quantity must be greater than 0");
+        }
     }
 }

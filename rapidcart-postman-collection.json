@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "Rapid Cart API Validation Tests",
+    "description": "Collection for testing validation and exception handling across Rapid Cart services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Order Service",
+      "item": [
+        {
+          "name": "Create Order - Invalid Payload",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"\",\n  \"userId\": \"\",\n  \"quantity\": 0,\n  \"amount\": 0\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/orders",
+              "host": ["http://localhost:8081"],
+              "path": ["orders"]
+            }
+          }
+        },
+        {
+          "name": "Create Order - Valid Payload",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"P1001\",\n  \"userId\": \"U1001\",\n  \"quantity\": 2,\n  \"amount\": 49.99\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/orders",
+              "host": ["http://localhost:8081"],
+              "path": ["orders"]
+            }
+          }
+        },
+        {
+          "name": "Get Order - Not Found",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8081/orders/does-not-exist",
+              "host": ["http://localhost:8081"],
+              "path": ["orders", "does-not-exist"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory Service",
+      "item": [
+        {
+          "name": "Add Stock - Invalid Payload",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"\",\n  \"quantity\": 0\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8082/inventory/add",
+              "host": ["http://localhost:8082"],
+              "path": ["inventory", "add"]
+            }
+          }
+        },
+        {
+          "name": "Add Stock - Valid Payload",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"P1001\",\n  \"quantity\": 5\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8082/inventory/add",
+              "host": ["http://localhost:8082"],
+              "path": ["inventory", "add"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Payment Health",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8083/payment/health",
+              "host": ["http://localhost:8083"],
+              "path": ["payment", "health"]
+            }
+          }
+        },
+        {
+          "name": "Notification Health",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8084/notification/health",
+              "host": ["http://localhost:8084"],
+              "path": ["notification", "health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

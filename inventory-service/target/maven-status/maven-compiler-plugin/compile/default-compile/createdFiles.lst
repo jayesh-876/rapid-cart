@@ -1,9 +1,0 @@
-com/rapidcart/inventory/entity/ItemEntity.class
-com/rapidcart/inventory/kafka/InventoryEventProducer.class
-com/rapidcart/inventory/repository/ItemRepository.class
-com/rapidcart/inventory/dto/AddStockRequest.class
-com/rapidcart/inventory/config/KafkaConsumerConfig.class
-com/rapidcart/inventory/kafka/InventoryEventConsumer.class
-com/rapidcart/inventory/service/InventoryService.class
-com/rapidcart/inventory/InventoryServiceApplication.class
-com/rapidcart/inventory/controller/InventoryController.class
