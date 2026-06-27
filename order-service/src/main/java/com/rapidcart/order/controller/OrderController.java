@@ -5,6 +5,7 @@ import com.rapidcart.order.dto.OrderResponse;
 import com.rapidcart.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class OrderController {
 
     @Operation(summary = "Create Order", description = "Creates a new order and starts Saga workflow")
     @PostMapping
-    public OrderResponse create(@RequestBody CreateOrderRequest request) {
+    public OrderResponse create(@Valid @RequestBody CreateOrderRequest request) {
         return orderService.createOrder(request);
     }
 
