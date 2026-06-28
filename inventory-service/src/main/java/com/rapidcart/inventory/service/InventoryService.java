@@ -10,6 +10,9 @@ import com.rapidcart.order.events.InventoryReservedEvent;
 import com.rapidcart.order.events.OrderCreatedEvent;
 import com.rapidcart.order.events.ReleaseInventoryEvent;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,10 @@ public class InventoryService {
     private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
     private final ItemRepository repository;
     private final InventoryEventProducer producer;
+
+    public List<ItemEntity> getAllItems() {
+        return repository.findAll();
+    }
 
     public void handleOrderCreated(OrderCreatedEvent event) {
         validateOrderCreatedEvent(event);
