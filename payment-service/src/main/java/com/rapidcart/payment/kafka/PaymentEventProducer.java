@@ -13,10 +13,10 @@ public class PaymentEventProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public void publishPaymentCompleted(PaymentCompletedEvent event) {
-        kafkaTemplate.send("payment-completed", event.orderId(), event);
+        kafkaTemplate.send("payment-completed", event.orderId(), event).join();
     }
 
     public void publishPaymentFailed(PaymentFailedEvent event) {
-        kafkaTemplate.send("payment-failed", event.orderId(), event);
+        kafkaTemplate.send("payment-failed", event.orderId(), event).join();
     }
 }

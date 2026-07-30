@@ -19,6 +19,8 @@ cd ..   # rapid-cart root
 docker compose up --build
 ```
 
+The compose build uses the root `Dockerfile` with a `SERVICE` build arg for each Spring Boot module, so `common-events` and the parent Maven POM are available during image builds.
+
 Services will be available at:
 | Service | Port |
 |---|---|

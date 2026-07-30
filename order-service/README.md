@@ -12,12 +12,15 @@
 - Kafka
 - PostgreSQL
 - JPA / Hibernate
-- Java 17
+- Java 21
 
 ## API
 ### POST /orders
 ```json
 {
+  "productId": "P1",
   "userId": "U123",
+  "quantity": 1,
   "amount": 300.00
 }
+```

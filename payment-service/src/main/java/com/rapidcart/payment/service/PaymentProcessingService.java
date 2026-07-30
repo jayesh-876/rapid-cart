@@ -3,6 +3,7 @@ package com.rapidcart.payment.service;
 import com.rapidcart.order.events.InventoryReservedEvent;
 import com.rapidcart.order.events.PaymentCompletedEvent;
 import com.rapidcart.order.events.PaymentFailedEvent;
+import com.rapidcart.common.exception.ValidationException;
 import com.rapidcart.payment.entity.PaymentRecord;
 import com.rapidcart.payment.kafka.PaymentEventProducer;
 import com.rapidcart.payment.repository.PaymentRepository;
@@ -24,6 +25,7 @@ public class PaymentProcessingService {
     private final PaymentEventProducer producer;
 
     public void processPayment(InventoryReservedEvent event) {
+        validateEvent(event);
         log.info("Processing payment: orderId={}", event.orderId());
         try {
             boolean paymentSuccess = RandomGenerator.getDefault().nextDouble() < PAYMENT_SUCCESS_RATE;
@@ -52,6 +54,28 @@ public class PaymentProcessingService {
             }
         } catch (Exception ex) {
             log.error("Error processing payment: orderId={}", event.orderId(), ex);
+            publishProcessingFailure(event, ex);
+        }
+    }
+
+    private void validateEvent(InventoryReservedEvent event) {
+        if (event == null) {
+            throw new ValidationException("Event payload is required");
+        }
+        if (event.orderId() == null || event.orderId().isBlank()) {
+            throw new ValidationException("orderId is required");
+        }
+    }
+
+    private void publishProcessingFailure(InventoryReservedEvent event, Exception originalError) {
+        try {
+            producer.publishPaymentFailed(
+                    new PaymentFailedEvent(event.orderId(), "Payment processing error")
+            );
+            log.info("Published PaymentFailedEvent after processing error: orderId={}", event.orderId());
+        } catch (Exception publishError) {
+            originalError.addSuppressed(publishError);
+            throw new IllegalStateException("Unable to publish payment failure event", originalError);
         }
     }
 }

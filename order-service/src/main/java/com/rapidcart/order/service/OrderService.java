@@ -125,10 +125,10 @@ public class OrderService {
         if (request.userId() == null || request.userId().isBlank()) {
             throw new ValidationException("userId is required");
         }
-        if (request.quantity() <= 0) {
+        if (request.quantity() == null || request.quantity() <= 0) {
             throw new ValidationException("quantity must be greater than 0");
         }
-        if (request.amount() <= 0) {
+        if (request.amount() == null || request.amount() <= 0) {
             throw new ValidationException("amount must be greater than 0");
         }
     }

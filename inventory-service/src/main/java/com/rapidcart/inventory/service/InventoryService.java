@@ -1,6 +1,5 @@
 package com.rapidcart.inventory.service;
 
-import com.rapidcart.common.exception.ResourceNotFoundException;
 import com.rapidcart.common.exception.ValidationException;
 import com.rapidcart.inventory.entity.ItemEntity;
 import com.rapidcart.inventory.repository.ItemRepository;
@@ -35,10 +34,16 @@ public class InventoryService {
 
         log.info("Checking inventory: orderId={}, productId={}", event.orderId(), productId);
         ItemEntity item = repository.findByProductId(productId)
-                .orElseThrow(() -> {
-                    log.error("Inventory not found: orderId={}, productId={}", event.orderId(), productId);
-                    return new ResourceNotFoundException("Inventory not found for productId=" + productId);
-                });
+                .orElse(null);
+
+        if (item == null) {
+            log.warn("Inventory not found: orderId={}, productId={}", event.orderId(), productId);
+            producer.publishInventoryFailed(
+                    new InventoryFailedEvent(event.orderId(), "Inventory not found for productId=" + productId)
+            );
+            log.info("Published InventoryFailedEvent: orderId={}", event.orderId());
+            return;
+        }
 
         if (item.getStock() >= event.quantity()) {
             int previousStock = item.getStock();

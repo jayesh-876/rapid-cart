@@ -63,7 +63,7 @@ export const healthApi = {
   payment:      () => request('GET', '/payment/health'),
   notification: () => request('GET', '/notification/health'),
   // Order & Inventory don't have dedicated health endpoints;
-  // we hit GET /orders as a lightweight probe
+  // we hit lightweight read endpoints as probes.
   order:        () => request('GET', '/orders'),
-  inventory:    () => request('GET', '/inventory/items').catch(() => ({ ok: true })),
+  inventory:    () => request('GET', '/inventory/items'),
 }

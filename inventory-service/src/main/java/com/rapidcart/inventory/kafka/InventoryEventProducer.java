@@ -13,10 +13,10 @@ public class InventoryEventProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public void publishInventoryReserved(InventoryReservedEvent event) {
-        kafkaTemplate.send("inventory-reserved", event.orderId(), event);
+        kafkaTemplate.send("inventory-reserved", event.orderId(), event).join();
     }
 
     public void publishInventoryFailed(InventoryFailedEvent event) {
-        kafkaTemplate.send("inventory-failed", event.orderId(), event);
+        kafkaTemplate.send("inventory-failed", event.orderId(), event).join();
     }
 }
